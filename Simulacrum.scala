@@ -8,7 +8,7 @@ class typeclass extends StaticAnnotation {
     def extractAlias(mods: Seq[Mod]): Option[String] = {
       var alias = Option.empty[String]
       mods.exists {
-        case Mod.Annot(Term.Apply(Ctor.Name("op"), List(Lit(alias0: String)))) => alias = Some(alias0); true
+        case mod"@op(${alias0: Lit})" => alias = Some(alias0.value.toString); true
         case _ => false
       }
       alias
@@ -17,7 +17,7 @@ class typeclass extends StaticAnnotation {
     def filterSimulacrumAnnotations(mods: Seq[Mod]): Seq[Mod] = {
       mods.filter {
         case Mod.Annot(Term.Apply(name: Ctor.Name, _)) =>
-          name == "op" || name == "noop" // todo fully resolved name
+          name == "op" || name == "noop"
         case _ => true
       }
     }
@@ -30,6 +30,7 @@ class typeclass extends StaticAnnotation {
         other
     }
 
+    val q"""
         trait $tname[$tparam] {
           ..$stats
         }
@@ -45,7 +46,7 @@ class typeclass extends StaticAnnotation {
         val tparams = m.tparams // todo filter first if it belongs only to paramss.head.head
         val decltpe = m.decltpe
         val termparams = m.paramss.head.tail
-        val aexprssnel: Seq[Seq[Term.Arg]] = List(arg"self" +: termparams.map(tp => Term.Name(tp.name.value))) // why Term.Name is Term.Arg ???
+        val aexprssnel: Seq[Seq[Term.Arg]] = List(arg"self" +: termparams.map(tp => Term.Name(tp.name.value)))
         val paramss = m.paramss.updated(0, termparams)
         val body = q"typeClassInstance.${m.name}(...$aexprssnel)"
         Defn.Def(mods, name, tparams, paramss, Some(decltpe), body)
