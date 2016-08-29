@@ -4,7 +4,7 @@ import scala.meta.transversers._
 import scala.collection.immutable.Seq
 
 class typeclass extends StaticAnnotation {
-  inline def apply(defn: Defn.Trait) = meta {
+  inline def apply(defn: Any) = meta {
     def extractAlias(mods: Seq[Mod]): Option[String] = {
       var alias = Option.empty[String]
       mods.exists {
