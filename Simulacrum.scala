@@ -30,7 +30,6 @@ class typeclass extends StaticAnnotation {
         other
     }
 
-    val q"""
         trait $tname[$tparam] {
           ..$stats
         }
@@ -69,7 +68,7 @@ class typeclass extends StaticAnnotation {
          ..${filterStatSimulacrumAnnotations(stats)}
        }
 
-       object Semigroup {
+       object $name {
          def apply[$tparam](implicit instance: $tname[$tparamname]): $tname[$tparamname] = instance
 
          trait Ops[$tparam] {
